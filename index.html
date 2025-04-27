@@ -6,30 +6,23 @@
   <title>클래식 음악 성향 테스트</title>
   <style>
     html, body {
-      max-width: 100%;
-      overflow-x: hidden;
-      box-sizing: border-box;
       margin: 0;
       padding: 0;
-    }
-    *, *::before, *::after {
-      box-sizing: inherit;
-    }
-    body {
+      width: 100%;
+      height: 100%;
       font-family: 'Arial', sans-serif;
       background: linear-gradient(135deg, #dbe9f4, #f5f0ff);
-      color: #333;
-      text-align: center;
+      overflow-x: hidden;
     }
     #start-screen {
-      height: 100vh;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       align-items: center;
+      height: 100vh;
       padding: 40px 20px;
       box-sizing: border-box;
-      background: url('StartIMG/background.jpg') no-repeat center center / cover; /* 배경이미지 추가 */
+      background: url('StartIMG/background.jpg') no-repeat center center/cover;
     }
     .start-text {
       margin-top: 30px;
@@ -56,6 +49,35 @@
     .hidden {
       display: none;
     }
+    .card {
+      background: #fff;
+      max-width: 500px;
+      width: calc(100% - 40px);
+      margin: 20px auto;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      text-align: center;
+    }
+    .question-img {
+      width: 100%;
+      aspect-ratio: 3/2;
+      object-fit: cover;
+      border-radius: 10px;
+      margin-bottom: 15px;
+    }
+    button.answer-button {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+      padding: 14px;
+      font-size: 16px;
+      background: #4a4a8a;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -63,20 +85,13 @@
     <div class="start-text">
       🎵 나의 꿈을 닮은 클래식 음악 찾기
     </div>
-    <button class="start-button" onclick="startTest()">테스트 시작하기</button>
+    <button class="start-button" id="startButton">테스트 시작하기</button>
   </div>
 
-  <div id="quiz" class="hidden"></div>
-  <div id="result" class="hidden"></div>
+  <div id="quiz" class="card hidden"></div>
+  <div id="result" class="card hidden"></div>
 
   <script>
-      document.getElementById('startButton').addEventListener('click', startTest);
-  
-    function startTest() {
-      document.getElementById("start-screen").classList.add("hidden");
-      document.getElementById("quiz").classList.remove("hidden");
-      renderQuestion();
-    }
     const questions = [
       { q: "당신의 잠은 어떤 색일까요?", options: ["옅은 회색과 푸른빛 사이", "짙은 남색, 고요한 검정", "짙은 보라와 짙은 검은색", "알록달록 꿈결 같은 파스텔"] },
       { q: "평소 잠들기 전 당신은?", options: ["긴 하루를 정리하며 현실과 꿈의 경계에 서 있는 느낌", "아무 생각 없이 곧바로 잠에 빠져요", "불안하거나 초조한 감정이 남아요", "상상의 나래를 펼치다 잠들어요"] },
@@ -88,6 +103,8 @@
     let current = 0;
     let score = { "현실을 꿈꾸는 자": 0, "고요한 숙면가": 0, "밤의 표류자": 0, "자유 몽상가": 0 };
 
+    document.getElementById('startButton').addEventListener('click', startTest);
+
     function startTest() {
       document.getElementById("start-screen").classList.add("hidden");
       document.getElementById("quiz").classList.remove("hidden");
@@ -95,11 +112,11 @@
     }
 
     function renderQuestion() {
-      const quiz = document.getElementById("quiz");
       const q = questions[current];
+      const quiz = document.getElementById("quiz");
       quiz.innerHTML = `<div style='margin:20px 0;font-size:22px;font-weight:bold;'>Q${current+1}</div>
-                         <p>${q.q}</p>
-                         ${q.options.map((opt, idx) => `<button onclick="answer(${idx})" style='display:block;margin:10px auto;padding:12px 20px;width:80%;max-width:300px;background:#4a4a8a;color:white;border:none;border-radius:8px;'>${opt}</button>`).join('')}`;
+                        <p>${q.q}</p>
+                        ${q.options.map((opt, idx) => `<button class='answer-button' onclick='answer(${idx})'>${opt}</button>`).join('')}`;
     }
 
     function answer(index) {
@@ -145,7 +162,7 @@
       document.getElementById("result").innerHTML = `
         <div style='margin:20px 0;font-size:28px;font-weight:bold;color:#4a4a8a;'>${finalType}</div>
         <p>${resultText}</p>
-        <img src="${resultImg}" alt="결과 이미지" style='width:100%;aspect-ratio:3/2;object-fit:cover;border-radius:10px;margin:20px 0;'>
+        <img src="${resultImg}" alt="결과 이미지" class="question-img">
         <p style="margin-top:20px;font-weight:bold;">🎵 꿈의 BGM을 추천해드릴게요!</p>
         <p>${resultMusic}</p>
       `;
