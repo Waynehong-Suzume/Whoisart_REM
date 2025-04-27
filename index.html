@@ -9,110 +9,64 @@
       max-width: 100%;
       overflow-x: hidden;
       box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
     *, *::before, *::after {
       box-sizing: inherit;
     }
-#start-screen {
-  height: 100vh; /* 전체 화면 꽉 채우기 */
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  padding: 40px 20px;
-  background: linear-gradient(135deg, #dbe9f4, #f5f0ff); /* 은은한 클래식 느낌 */
-  box-sizing: border-box;
-}
-.start-text {
-  margin-top: 30px;
-  font-size: 22px;
-  font-weight: bold;
-  text-align: center;
-  color: #4a4a8a; /* 클래식+몽환 느낌 */
-}
-.start-button {
-  margin-bottom: 50px;
-  width: 100%;
-  max-width: 300px;
-  padding: 16px;
-  background: #4a4a8a;
-  color: white;
-  font-size: 18px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-}
-.start-button:hover {
-  background: #3b3b6b;
-}
-    
     body {
       font-family: 'Arial', sans-serif;
-      background: linear-gradient(to bottom, #dfe9f3, #ffffff);
-      margin: 0;
-      padding: 20px;
+      background: linear-gradient(135deg, #dbe9f4, #f5f0ff);
       color: #333;
       text-align: center;
     }
-    .card, .result {
-      background: #fff;
-      max-width: 500px;
-      width: calc(100% - 40px);
-      margin: 20px auto;
-      padding: 25px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    #start-screen {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      padding: 40px 20px;
+      box-sizing: border-box;
     }
-    .question-img, .result img {
-      width: 100%;
-      aspect-ratio: 3/2;
-      object-fit: cover;
-      border-radius: 10px;
-      margin-bottom: 15px;
+    .start-text {
+      margin-top: 30px;
+      font-size: 24px;
+      font-weight: bold;
+      color: #4a4a8a;
     }
-    button {
+    .start-button {
+      margin-bottom: 50px;
       width: 100%;
-      padding: 14px;
-      margin: 10px 0;
-      font-size: 16px;
-      background: #5d5fef;
+      max-width: 300px;
+      padding: 16px;
+      background: #4a4a8a;
       color: white;
+      font-size: 18px;
       border: none;
       border-radius: 8px;
       cursor: pointer;
       transition: background 0.3s;
     }
-    button:hover {
-      background: #4749d8;
+    .start-button:hover {
+      background: #3b3b6b;
     }
     .hidden {
       display: none;
     }
-    .title {
-      font-size: 28px;
-      font-weight: bold;
-      margin-bottom: 20px;
-      color: #5d5fef;
-    }
-    .fade {
-      animation: fadeIn 1s;
-    }
-    @keyframes fadeIn {
-      from {opacity: 0;}
-      to {opacity: 1;}
-    }
   </style>
 </head>
 <body>
-<div id="start-screen">
-  <div class="start-text">
-    🎵 나의 꿈을 닮은 클래식 음악 찾기
+  <div id="start-screen">
+    <div class="start-text">
+      🎵 나의 꿈을 닮은 클래식 음악 찾기
+    </div>
+    <button class="start-button" onclick="startTest()">테스트 시작하기</button>
   </div>
-  <button class="start-button" onclick="startTest()">테스트 시작하기</button>
-</div>
 
-  <div id="quiz" class="card hidden"></div>
-  <div id="result" class="result hidden"></div>
+  <div id="quiz" class="hidden"></div>
+  <div id="result" class="hidden"></div>
 
   <script>
     const questions = [
@@ -135,10 +89,9 @@
     function renderQuestion() {
       const quiz = document.getElementById("quiz");
       const q = questions[current];
-      quiz.classList.add("fade");
-      quiz.innerHTML = `<div class='title'>Q${current+1}</div>
+      quiz.innerHTML = `<div style='margin:20px 0;font-size:22px;font-weight:bold;'>Q${current+1}</div>
                          <p>${q.q}</p>
-                         ${q.options.map((opt, idx) => `<button onclick="answer(${idx})">${opt}</button>`).join('')}`;
+                         ${q.options.map((opt, idx) => `<button onclick="answer(${idx})" style='display:block;margin:10px auto;padding:12px 20px;width:80%;max-width:300px;background:#4a4a8a;color:white;border:none;border-radius:8px;'>${opt}</button>`).join('')}`;
     }
 
     function answer(index) {
@@ -182,10 +135,10 @@
       }
 
       document.getElementById("result").innerHTML = `
-        <div class='title'>${finalType}</div>
+        <div style='margin:20px 0;font-size:28px;font-weight:bold;color:#4a4a8a;'>${finalType}</div>
         <p>${resultText}</p>
-        <img src="${resultImg}" alt="결과 이미지">
-        <p style="margin-top:20px; font-weight:bold;">🎵 꿈의 BGM을 추천해드릴게요!</p>
+        <img src="${resultImg}" alt="결과 이미지" style='width:100%;aspect-ratio:3/2;object-fit:cover;border-radius:10px;margin:20px 0;'>
+        <p style="margin-top:20px;font-weight:bold;">🎵 꿈의 BGM을 추천해드릴게요!</p>
         <p>${resultMusic}</p>
       `;
     }
