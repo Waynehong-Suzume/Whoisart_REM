@@ -6,50 +6,22 @@
   <title>클래식 음악 성향 테스트</title>
   <style>
     html, body {
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      height: 100%;
-      font-family: 'Arial', sans-serif;
-      background: linear-gradient(135deg, #dbe9f4, #f5f0ff);
+      max-width: 100%;
       overflow-x: hidden;
-    }
-    #start-screen {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      align-items: center;
-      height: 100vh;
-      padding: 40px 20px;
       box-sizing: border-box;
-      background: url('StartIMG/background.jpg') no-repeat center center/cover;
     }
-    .start-text {
-      margin-top: 30px;
-      font-size: 24px;
-      font-weight: bold;
-      color: #4a4a8a;
+    *, *::before, *::after {
+      box-sizing: inherit;
     }
-    .start-button {
-      margin-bottom: 50px;
-      width: 100%;
-      max-width: 300px;
-      padding: 16px;
-      background: #4a4a8a;
-      color: white;
-      font-size: 18px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background 0.3s;
+    body {
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(to bottom, #dfe9f3, #ffffff);
+      margin: 0;
+      padding: 20px;
+      color: #333;
+      text-align: center;
     }
-    .start-button:hover {
-      background: #3b3b6b;
-    }
-    .hidden {
-      display: none;
-    }
-    .card {
+    .card, .result {
       background: #fff;
       max-width: 500px;
       width: calc(100% - 40px);
@@ -57,118 +29,131 @@
       padding: 25px;
       border-radius: 12px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-      text-align: center;
     }
-    .question-img {
+    .question-img, .result img {
       width: 100%;
       aspect-ratio: 3/2;
       object-fit: cover;
       border-radius: 10px;
       margin-bottom: 15px;
     }
-    button.answer-button {
-      display: block;
+    button {
       width: 100%;
-      margin: 10px 0;
       padding: 14px;
+      margin: 10px 0;
       font-size: 16px;
-      background: #4a4a8a;
+      background: #5d5fef;
       color: white;
       border: none;
       border-radius: 8px;
       cursor: pointer;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background: #4749d8;
+    }
+    .hidden {
+      display: none;
+    }
+    .title {
+      font-size: 28px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      color: #5d5fef;
+    }
+    .fade {
+      animation: fadeIn 1s;
+    }
+    @keyframes fadeIn {
+      from {opacity: 0;}
+      to {opacity: 1;}
     }
   </style>
 </head>
 <body>
-  <div id="start-screen">
-    <div class="start-text">
-      🎵 나의 꿈을 닮은 클래식 음악 찾기
-    </div>
-    <button class="start-button" id="startButton">테스트 시작하기</button>
+  <div id="start-screen" class="card">
+    <h1>당신의 꿈은 어떤 색인가요?</h1>
+    <button onclick="startTest()">테스트 시작하기</button>
   </div>
 
   <div id="quiz" class="card hidden"></div>
-  <div id="result" class="card hidden"></div>
+  <div id="result" class="result hidden"></div>
 
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const questions = [
-        { q: "당신의 잠은 어떤 색일까요?", options: ["옅은 회색과 푸른빛 사이", "짙은 남색, 고요한 검정", "짙은 보라와 짙은 검은색", "알록달록 꿈결 같은 파스텔"] },
-        { q: "평소 잠들기 전 당신은?", options: ["긴 하루를 정리하며 현실과 꿈의 경계에 서 있는 느낌", "아무 생각 없이 곧바로 잠에 빠져요", "불안하거나 초조한 감정이 남아요", "상상의 나래를 펼치다 잠들어요"] },
-        { q: "꿈에서 자주 등장하는 장면은?", options: ["평범한 일상이지만 뭔가 이상해요", "기억이 전혀 없어요", "추격당하거나 어두운 장소", "환상적인 풍경이나 말도 안 되는 상황"] }
-      ];
+    const questions = [
+      { q: "당신의 잠은 어떤 색일까요?", options: ["옅은 회색과 푸른빛 사이", "짙은 남색, 고요한 검정", "짙은 보라와 짙은 검은색", "알록달록 꿈결 같은 파스텔"] },
+      { q: "평소 잠들기 전 당신은?", options: ["긴 하루를 정리하며 현실과 꿈의 경계에 서 있는 느낌", "아무 생각 없이 곧바로 잠에 빠져요", "불안하거나 초조한 감정이 남아요", "상상의 나래를 펼치다 잠들어요"] },
+      { q: "꿈에서 자주 등장하는 장면은?", options: ["평범한 일상이지만 뭔가 이상해요", "기억이 전혀 없어요", "추격당하거나 어두운 장소", "환상적인 풍경이나 말도 안 되는 상황"] }
+    ];
 
-      const mappings = ["현실을 꿈꾸는 자", "고요한 숙면가", "밤의 표류자", "자유 몽상가"];
+    const mappings = ["현실을 꿈꾸는 자", "고요한 숙면가", "밤의 표류자", "자유 몽상가"];
 
-      let current = 0;
-      let score = { "현실을 꿈꾸는 자": 0, "고요한 숙면가": 0, "밤의 표류자": 0, "자유 몽상가": 0 };
+    let current = 0;
+    let score = { "현실을 꿈꾸는 자": 0, "고요한 숙면가": 0, "밤의 표류자": 0, "자유 몽상가": 0 };
 
-      document.getElementById('startButton').addEventListener('click', startTest);
+    function startTest() {
+      document.getElementById("start-screen").classList.add("hidden");
+      document.getElementById("quiz").classList.remove("hidden");
+      renderQuestion();
+    }
 
-      function startTest() {
-        document.getElementById("start-screen").classList.add("hidden");
-        document.getElementById("quiz").classList.remove("hidden");
+    function renderQuestion() {
+      const quiz = document.getElementById("quiz");
+      const q = questions[current];
+      quiz.classList.add("fade");
+      quiz.innerHTML = `<div class='title'>Q${current+1}</div>
+                         <p>${q.q}</p>
+                         ${q.options.map((opt, idx) => `<button onclick="answer(${idx})">${opt}</button>`).join('')}`;
+    }
+
+    function answer(index) {
+      const type = mappings[index];
+      score[type]++;
+      current++;
+      if (current < questions.length) {
         renderQuestion();
+      } else {
+        showResult();
+      }
+    }
+
+    function showResult() {
+      document.getElementById("quiz").classList.add("hidden");
+      document.getElementById("result").classList.remove("hidden");
+
+      const maxScore = Math.max(...Object.values(score));
+      const finalType = Object.keys(score).find(key => score[key] === maxScore);
+
+      let resultText = "";
+      let resultImg = "";
+      let resultMusic = "";
+
+      if (finalType === "현실을 꿈꾸는 자") {
+        resultText = "꿈과 현실 사이를 자유롭게 오가는 당신.";
+        resultImg = "RE/IMG_1.jpg";
+        resultMusic = "드뷔시 - 달빛 (Clair de Lune)";
+      } else if (finalType === "고요한 숙면가") {
+        resultText = "고요하고 깊은 잠에 빠지는 당신.";
+        resultImg = "RE/IMG_2.jpg";
+        resultMusic = "쇼팽 - 녹턴 No.2 (Nocturne Op.9-2)";
+      } else if (finalType === "밤의 표류자") {
+        resultText = "어둠 속을 떠도는 꿈을 꾸는 당신.";
+        resultImg = "RE/IMG_3.jpg";
+        resultMusic = "리스트 - 사랑의 꿈 (Liebestraum)";
+      } else {
+        resultText = "현실을 초월한 상상력을 가진 당신.";
+        resultImg = "RE/IMG_4.jpg";
+        resultMusic = "라벨 - 거울 (Miroirs)";
       }
 
-      function renderQuestion() {
-        const q = questions[current];
-        const quiz = document.getElementById("quiz");
-        quiz.innerHTML = `<div style='margin:20px 0;font-size:22px;font-weight:bold;'>Q${current+1}</div>
-                          <p>${q.q}</p>
-                          ${q.options.map((opt, idx) => `<button class='answer-button' onclick='answer(${idx})'>${opt}</button>`).join('')}`;
-      }
-
-      function answer(index) {
-        const type = mappings[index];
-        score[type]++;
-        current++;
-        if (current < questions.length) {
-          renderQuestion();
-        } else {
-          showResult();
-        }
-      }
-
-      function showResult() {
-        document.getElementById("quiz").classList.add("hidden");
-        document.getElementById("result").classList.remove("hidden");
-
-        const maxScore = Math.max(...Object.values(score));
-        const finalType = Object.keys(score).find(key => score[key] === maxScore);
-
-        let resultText = "";
-        let resultImg = "";
-        let resultMusic = "";
-
-        if (finalType === "현실을 꿈꾸는 자") {
-          resultText = "꿈과 현실 사이를 자유롭게 오가는 당신.";
-          resultImg = "RE/IMG_1.jpg";
-          resultMusic = "드뷔시 - 달빛 (Clair de Lune)";
-        } else if (finalType === "고요한 숙면가") {
-          resultText = "고요하고 깊은 잠에 빠지는 당신.";
-          resultImg = "RE/IMG_2.jpg";
-          resultMusic = "쇼팽 - 녹턴 No.2 (Nocturne Op.9-2)";
-        } else if (finalType === "밤의 표류자") {
-          resultText = "어둠 속을 떠도는 꿈을 꾸는 당신.";
-          resultImg = "RE/IMG_3.jpg";
-          resultMusic = "리스트 - 사랑의 꿈 (Liebestraum)";
-        } else {
-          resultText = "현실을 초월한 상상력을 가진 당신.";
-          resultImg = "RE/IMG_4.jpg";
-          resultMusic = "라벨 - 거울 (Miroirs)";
-        }
-
-        document.getElementById("result").innerHTML = `
-          <div style='margin:20px 0;font-size:28px;font-weight:bold;color:#4a4a8a;'>${finalType}</div>
-          <p>${resultText}</p>
-          <img src="${resultImg}" alt="결과 이미지" class="question-img">
-          <p style="margin-top:20px;font-weight:bold;'>🎵 꿈의 BGM을 추천해드릴게요!</p>
-          <p>${resultMusic}</p>
-        `;
-      }
-    });
+      document.getElementById("result").innerHTML = `
+        <div class='title'>${finalType}</div>
+        <p>${resultText}</p>
+        <img src="${resultImg}" alt="결과 이미지">
+        <p style="margin-top:20px; font-weight:bold;">🎵 꿈의 BGM을 추천해드릴게요!</p>
+        <p>${resultMusic}</p>
+      `;
+    }
   </script>
 </body>
 </html>
