@@ -29,6 +29,7 @@
       align-items: center;
       padding: 40px 20px;
       box-sizing: border-box;
+      background: url('StartIMG/background.jpg') no-repeat center center / cover; /* 배경이미지 추가 */
     }
     .start-text {
       margin-top: 30px;
@@ -62,13 +63,20 @@
     <div class="start-text">
       🎵 나의 꿈을 닮은 클래식 음악 찾기
     </div>
-    <button class="start-button" onclick="startTest()">테스트 시작하기</button>
+    <button class="start-button" id="startButton">테스트 시작하기</button>
   </div>
 
   <div id="quiz" class="hidden"></div>
   <div id="result" class="hidden"></div>
 
   <script>
+      document.getElementById('startButton').addEventListener('click', startTest);
+  
+    function startTest() {
+      document.getElementById("start-screen").classList.add("hidden");
+      document.getElementById("quiz").classList.remove("hidden");
+      renderQuestion();
+    }
     const questions = [
       { q: "당신의 잠은 어떤 색일까요?", options: ["옅은 회색과 푸른빛 사이", "짙은 남색, 고요한 검정", "짙은 보라와 짙은 검은색", "알록달록 꿈결 같은 파스텔"] },
       { q: "평소 잠들기 전 당신은?", options: ["긴 하루를 정리하며 현실과 꿈의 경계에 서 있는 느낌", "아무 생각 없이 곧바로 잠에 빠져요", "불안하거나 초조한 감정이 남아요", "상상의 나래를 펼치다 잠들어요"] },
