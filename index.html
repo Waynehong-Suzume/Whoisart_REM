@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>클래식 음악 성향 테스트</title>
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard&display=swap" rel="stylesheet">
   <style>
     html, body {
       max-width: 100%;
@@ -14,21 +15,21 @@
       box-sizing: inherit;
     }
     body {
-      font-family: 'Arial', sans-serif;
-      background: linear-gradient(to bottom, #dfe9f3, #ffffff);
+      font-family: 'Pretendard', sans-serif;
+      background: radial-gradient(circle at top, #0d111a 0%, #0d111a 30%, #0c1018 60%, #0a0d14 100%);
       margin: 0;
       padding: 20px;
-      color: #333;
+      color: #eee;
       text-align: center;
     }
     .card, .result {
-      background: #fff;
+      background: #1a1c2c;
       max-width: 500px;
       width: calc(100% - 40px);
       margin: 20px auto;
       padding: 25px;
       border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.4);
     }
     .question-img, .result img {
       width: 100%;
@@ -42,7 +43,7 @@
       padding: 14px;
       margin: 10px 0;
       font-size: 16px;
-      background: #5d5fef;
+      background: #4f46e5;
       color: white;
       border: none;
       border-radius: 8px;
@@ -50,7 +51,7 @@
       transition: background 0.3s;
     }
     button:hover {
-      background: #4749d8;
+      background: #3730a3;
     }
     .hidden {
       display: none;
@@ -59,14 +60,14 @@
       font-size: 28px;
       font-weight: bold;
       margin-bottom: 20px;
-      color: #5d5fef;
+      color: #a5b4fc;
     }
     .fade {
-      animation: fadeIn 1s;
+      animation: fadeIn 1s ease-in-out;
     }
     @keyframes fadeIn {
-      from {opacity: 0;}
-      to {opacity: 1;}
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
@@ -83,29 +84,64 @@
     const questions = [
       {
         q: "당신의 잠은 어떤 색일까요?",
-        options: ["옅은 회색과 푸른빛 사이 몽환적인 색감", "짙은 남색과 검정의 차분한 색감", "짙은 보라와 짙은 먹색이 뒤엉킨 색감", "알록달록 꿈결 같은 파스텔 색감"]
+        img: "Q/1.jpg",
+        options: [
+          "옅은 회색과 푸른빛 사이 몽환적인 색감",
+          "짙은 남색과 검정의 차분한 색감",
+          "짙은 보라와 짙은 먹색이 뒤엉킨 색감",
+          "알록달록 꿈결 같은 파스텔 색감"
+        ]
       },
       {
         q: "지친 하루의 끝에 이불 속 당신은 어떤 모습인가요?",
-        options: ["긴 하루를 정리하며 자꾸만 선잠을 자요", "아무 생각 없이 곧바로 잠에 빠져요", "사색에 빠져서 불안하거나 초조한 감정이 남아요", "상상의 나래를 펼치다 잠들어요"]
+        img: "Q/2.jpg",
+        options: [
+          "긴 하루를 정리하며 자꾸만 선잠을 자요",
+          "아무 생각 없이 곧바로 잠에 빠져요",
+          "사색에 빠져서 불안하거나 초조한 감정이 남아요",
+          "상상의 나래를 펼치다 잠들어요"
+        ]
       },
       {
         q: "꿈에서 자주 등장하는 장면은 무엇인가요?",
-        options: ["평범한 일상이지만 뭔가 이상해요", "기억이 전혀 없어요", "추격당하거나 어두운 장소에 놓여져요", "하늘을 걷거나 날고 있는 말도 안되는 풍경이 펼쳐져요"]
+        img: "Q/3.jpg",
+        options: [
+          "평범한 일상이지만 뭔가 이상해요",
+          "기억이 전혀 없어요",
+          "추격당하거나 어두운 장소에 놓여져요",
+          "하늘을 걷거나 날고 있는 말도 안되는 풍경이 펼쳐져요"
+        ]
       },
       {
         q: "당신은 해결해야 할 일이 있을 때, 어떤 생각을 먼저 하시나요?",
-        options: ["이게 왜 이렇게 된 걸까? 흐름과 구조를 먼저 떠올려요", "지금 중요한 건 뭘까? 현재 상황에 집중해요", "앞으로 어떤 일이 벌어질까? 머릿속에서 여러 상황을 그려봐요", "이게 만약 다르게 흘렀다면? 상상을 확장시켜요"]
+        img: "Q/4.jpg",
+        options: [
+          "이게 왜 이렇게 된 걸까? 흐름과 구조를 먼저 떠올려요",
+          "지금 중요한 건 뭘까? 현재 상황에 집중해요",
+          "앞으로 어떤 일이 벌어질까? 머릿속에서 여러 상황을 그려봐요",
+          "이게 만약 다르게 흘렀다면? 상상을 확장시켜요"
+        ]
       },
       {
         q: "당신은 어떤 공간에 있을 때 기분이 좋아지나요?",
-        options: ["익숙한 카페나 동네 골목길이 좋아요", "빛이 적고 조용한, 아무것도 하지 않아도 눈치보이지 않는 내 방이 제일 편해요", "혼자만의 아지트같은 장소를 좋아해요", "갤러리나 독립서점을 좋아하고, 여행지에 도착했을 때 가장 설레요"]
+        img: "Q/5.jpg",
+        options: [
+          "익숙한 카페나 동네 골목길이 좋아요",
+          "빛이 적고 조용한, 아무것도 하지 않아도 눈치보이지 않는 내 방이 제일 편해요",
+          "혼자만의 아지트같은 장소를 좋아해요",
+          "갤러리나 독립서점을 좋아하고, 여행지에 도착했을 때 가장 설레요"
+        ]
       }
     ];
 
     const mappings = ["현실을 꿈꾸는 자", "고요한 숙면가", "밤의 표류자", "자유 몽상가"];
     let current = 0;
-    let score = { "현실을 꿈꾸는 자": 0, "고요한 숙면가": 0, "밤의 표류자": 0, "자유 몽상가": 0 };
+    let score = {
+      "현실을 꿈꾸는 자": 0,
+      "고요한 숙면가": 0,
+      "밤의 표류자": 0,
+      "자유 몽상가": 0
+    };
 
     function startTest() {
       document.getElementById("start-screen").classList.add("hidden");
@@ -117,8 +153,12 @@
       const quiz = document.getElementById("quiz");
       const q = questions[current];
       quiz.classList.add("fade");
-      quiz.innerHTML = `<div class='title'>Q${current + 1}</div><p>${q.q}</p>` +
-        q.options.map((opt, idx) => `<button onclick="answer(${idx})">${opt}</button>`).join('');
+      quiz.innerHTML = `
+        <div class='title'>Q${current + 1}</div>
+        <p>${q.q}</p>
+        <img src="${q.img}" alt="질문 이미지" class="question-img">
+        ${q.options.map((opt, idx) => `<button onclick="answer(${idx})">${opt}</button>`).join('')}
+      `;
     }
 
     function answer(index) {
@@ -144,21 +184,21 @@
       let resultMusic = "";
 
       if (finalType === "현실을 꿈꾸는 자") {
-        resultText = "꿈과 현실 사이의 경계를 걷는 <현실을 꿈꾸는 자><br>매일 현실보다 더 현실같은 꿈 속을 지나가요.";
+        resultText = "꿈과 현실 사이를 자유롭게 오가는 당신.";
         resultImg = "RE/IMG_1.png";
-        resultMusic = "<쇼팽 – 녹턴 Op.9 No.2>";
+        resultMusic = "드뷔시 - 달빛 (Clair de Lune)";
       } else if (finalType === "고요한 숙면가") {
-        resultText = " 아무 꿈도 꾸지 않고 깊은 잠에 빠지는 <고요한 숙면가><br>이불 속은 가장 조용한 모험의 출발점이에요.";
+        resultText = "고요하고 깊은 잠에 빠지는 당신.";
         resultImg = "RE/IMG_2.png";
-        resultMusic = "<Jóhann Jóhannsson – 'Flight From The City’>";
+        resultMusic = "쇼팽 - 녹턴 No.2 (Nocturne Op.9-2)";
       } else if (finalType === "밤의 표류자") {
-        resultText = "악몽과 가위에 시달리는 <밤의 표류자><br>불안한 마음은 내려놓고 편안한 꿈에 몸을 맡겨요.";
+        resultText = "어둠 속을 떠도는 꿈을 꾸는 당신.";
         resultImg = "RE/IMG_3.png";
-        resultMusic = "<드뷔시 - 달빛>";
+        resultMusic = "리스트 - 사랑의 꿈 (Liebestraum)";
       } else {
-        resultText = "아주 비현실적인 꿈을 자주 꾸는 <자유 몽상가><br>무한한 상상력의 세계로 떠나는 여정이 기다리고 있어요.";
+        resultText = "현실을 초월한 상상력을 가진 당신.";
         resultImg = "RE/IMG_4.png";
-        resultMusic = "<Ravel – Jeux d’eau>";
+        resultMusic = "라벨 - 거울 (Miroirs)";
       }
 
       document.getElementById("result").innerHTML = `
@@ -167,8 +207,23 @@
         <img src="${resultImg}" alt="결과 이미지">
         <p style="margin-top:20px; font-weight:bold;">🎵 꿈의 BGM을 추천해드릴게요!</p>
         <p>${resultMusic}</p>
+ 	<button onclick="restartTest()" style="margin-top: 30px;">다시하기</button>
       `;
     }
+
+	function restartTest() {
+  		current = 0;
+  		score = {
+    			"현실을 꿈꾸는 자": 0,
+    			"고요한 숙면가": 0,
+    			"밤의 표류자": 0,
+    			"자유 몽상가": 0
+ 			 };
+
+  		document.getElementById("result").classList.add("hidden");
+  		document.getElementById("start-screen").classList.remove("hidden");
+		}
+
   </script>
 </body>
 </html>
