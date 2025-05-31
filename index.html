@@ -13,23 +13,31 @@
     }
     *, *::before, *::after {
       box-sizing: inherit;
+      transition: all 0.3s ease-in-out;
     }
     body {
       font-family: 'Pretendard', sans-serif;
-      background: radial-gradient(circle at top, #0d111a 0%, #0d111a 30%, #0c1018 60%, #0a0d14 100%);
+      background: linear-gradient(to bottom, #0f1117, #0c0e13);
+      background-attachment: fixed;
+      background-repeat: no-repeat;
       margin: 0;
       padding: 20px;
       color: #eee;
       text-align: center;
+      font-weight: 300;
     }
+
+
     .card, .result {
-      background: #1a1c2c;
+      background: rgba(20, 22, 36, 0.6);
+      backdrop-filter: blur(6px);
       max-width: 500px;
       width: calc(100% - 40px);
       margin: 20px auto;
       padding: 25px;
-      border-radius: 12px;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.3);
     }
     .question-img, .result img {
       width: 100%;
@@ -48,93 +56,110 @@
       border: none;
       border-radius: 8px;
       cursor: pointer;
-      transition: background 0.3s;
+      font-weight: 400;
     }
     button:hover {
-      background: #3730a3;
+      background: #3f3ff0;
+    }
+    button:active {
+      transform: scale(0.98);
     }
     .hidden {
       display: none;
     }
     .title {
       font-size: 28px;
-      font-weight: bold;
+      font-weight: 600;
       margin-bottom: 20px;
       color: #a5b4fc;
     }
     .fade {
-      animation: fadeIn 1s ease-in-out;
+      animation: fadeIn 0.6s ease-in-out;
     }
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
     }
+    @media screen and (max-width: 480px) {
+      body { padding: 10px; }
+      .card { padding: 20px 15px; }
+      button { font-size: 14px; padding: 12px; }
+    }
+    #stars {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: -1;
+    }
   </style>
 </head>
 <body>
+  <canvas id="stars"></canvas>
+
   <div id="start-screen" class="card">
     <h1>당신의 꿈은 어떤 색인가요?</h1>
     <button onclick="startTest()">테스트 시작하기</button>
   </div>
-
+  <audio id="bgm" src="Q/AKIRA.mp3" preload="auto"></audio>
   <div id="quiz" class="card hidden"></div>
   <div id="result" class="result hidden"></div>
 
   <script>
     const questions = [
-      {
-        q: "당신의 잠은 어떤 색일까요?",
-        img: "Q/1.jpg",
-        options: [
-          "옅은 회색과 푸른빛 사이 몽환적인 색감",
-          "짙은 남색과 검정의 차분한 색감",
-          "짙은 보라와 짙은 먹색이 뒤엉킨 색감",
-          "알록달록 꿈결 같은 파스텔 색감"
-        ]
-      },
-      {
-        q: "지친 하루의 끝에 이불 속 당신은 어떤 모습인가요?",
-        img: "Q/2.jpg",
-        options: [
-          "긴 하루를 정리하며 자꾸만 선잠을 자요",
-          "아무 생각 없이 곧바로 잠에 빠져요",
-          "사색에 빠져서 불안하거나 초조한 감정이 남아요",
-          "상상의 나래를 펼치다 잠들어요"
-        ]
-      },
-      {
-        q: "꿈에서 자주 등장하는 장면은 무엇인가요?",
-        img: "Q/3.jpg",
-        options: [
-          "평범한 일상이지만 뭔가 이상해요",
-          "기억이 전혀 없어요",
-          "추격당하거나 어두운 장소에 놓여져요",
-          "하늘을 걷거나 날고 있는 말도 안되는 풍경이 펼쳐져요"
-        ]
-      },
-      {
-        q: "당신은 해결해야 할 일이 있을 때, 어떤 생각을 먼저 하시나요?",
-        img: "Q/4.jpg",
-        options: [
-          "이게 왜 이렇게 된 걸까? 흐름과 구조를 먼저 떠올려요",
-          "지금 중요한 건 뭘까? 현재 상황에 집중해요",
-          "앞으로 어떤 일이 벌어질까? 머릿속에서 여러 상황을 그려봐요",
-          "이게 만약 다르게 흘렀다면? 상상을 확장시켜요"
-        ]
-      },
-      {
-        q: "당신은 어떤 공간에 있을 때 기분이 좋아지나요?",
-        img: "Q/5.jpg",
-        options: [
-          "익숙한 카페나 동네 골목길이 좋아요",
-          "빛이 적고 조용한, 아무것도 하지 않아도 눈치보이지 않는 내 방이 제일 편해요",
-          "혼자만의 아지트같은 장소를 좋아해요",
-          "갤러리나 독립서점을 좋아하고, 여행지에 도착했을 때 가장 설레요"
-        ]
-      }
-    ];
+  {
+    q: "당신의 잠은 어떤 색일까요?",
+    img: "Q/1.jpg",
+    options: [
+      "옅은 회색과 푸른빛 사이 몽환적인 색감",
+      "짙은 남색과 검정의 차분한 색감",
+      "짙은 보라와 짙은 먹색이 뒤엉킨 색감",
+      "알록달록 꿈결 같은 파스텔 색감"
+    ]
+  },
+  {
+    q: "지친 하루의 끝에 이불 속 당신은 어떤 모습인가요?",
+    img: "Q/2.webp",
+    options: [
+      "긴 하루를 정리하며 자꾸만 선잠을 자요",
+      "아무 생각 없이 곧바로 잠에 빠져요",
+      "사색에 빠져서 불안하거나 초조한 감정이 남아요",
+      "상상의 나래를 펼치다 잠들어요"
+    ]
+  },
+  {
+    q: "꿈에서 자주 등장하는 장면은 무엇인가요?",
+    img: "Q/3.jpg",
+    options: [
+      "평범한 일상이지만 뭔가 이상해요",
+      "기억이 전혀 없어요",
+      "추격당하거나 어두운 장소에 놓여져요",
+      "하늘을 걷거나 날고 있는 말도 안되는 풍경이 펼쳐져요"
+    ]
+  },
+  {
+    q: "당신은 해결해야 할 일이 있을 때, 어떤 생각을 먼저 하시나요?",
+    img: "Q/4.webp",
+    options: [
+      "이게 왜 이렇게 된 걸까? 흐름과 구조를 먼저 떠올려요",
+      "지금 중요한 건 뭘까? 현재 상황에 집중해요",
+      "앞으로 어떤 일이 벌어질까? 머릿속에서 여러 상황을 그려봐요",
+      "이게 만약 다르게 흘렀다면? 상상을 확장시켜요"
+    ]
+  },
+  {
+    q: "당신은 어떤 공간에 있을 때 기분이 좋아지나요?",
+    img: "Q/5.webp",
+    options: [
+      "익숙한 카페나 동네 골목길이 좋아요",
+      "빛이 적고 조용한, 아무것도 하지 않아도 눈치보이지 않는 내 방이 제일 편해요",
+      "혼자만의 아지트같은 장소를 좋아해요",
+      "갤러리나 독립서점을 좋아하고, 여행지에 도착했을 때 가장 설레요"
+    ]
+  }
+];
 
-    const mappings = ["현실을 꿈꾸는 자", "고요한 숙면가", "밤의 표류자", "자유 몽상가"];
+const mappings = ["현실을 꿈꾸는 자", "고요한 숙면가", "밤의 표류자", "자유 몽상가"];
     let current = 0;
     let score = {
       "현실을 꿈꾸는 자": 0,
@@ -148,6 +173,19 @@
       document.getElementById("quiz").classList.remove("hidden");
       renderQuestion();
     }
+function startTest() {
+  document.getElementById("start-screen").classList.add("hidden");
+  document.getElementById("quiz").classList.remove("hidden");
+
+  const bgm = document.getElementById("bgm");
+  bgm.volume = 0.5; // 볼륨 조절 (0.0 ~ 1.0)
+  bgm.play().catch((e) => {
+    console.log("음악 자동재생 실패:", e);
+  });
+
+  renderQuestion();
+}
+
 
     function renderQuestion() {
       const quiz = document.getElementById("quiz");
