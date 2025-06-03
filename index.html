@@ -75,6 +75,22 @@
     transform: translateY(0);
   }
 }
+
+@keyframes resultFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.result-appear {
+  animation: resultFadeIn 1s ease-out;
+}
+
 #intro-overlay.hidden {
   opacity: 0;
   pointer-events: none;
@@ -464,6 +480,11 @@ window.addEventListener('DOMContentLoaded', () => {
         <p>${resultMusic}</p>
  	<button onclick="restartTest()" style="margin-top: 30px;">다시하기</button>
       `;
+
+const resultDiv = document.getElementById("result");
+resultDiv.classList.remove("hidden");
+resultDiv.classList.add("result-appear");
+
     }
 
 	function restartTest() {
