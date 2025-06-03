@@ -241,14 +241,16 @@
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
 
+  let starColor = '255, 255, 255';
+
   let stars = Array(150).fill().map(() => ({
     x: Math.random() * canvas.width,
     y: Math.random() * canvas.height,
     r: Math.random() * 1.2 + 0.5,
     vx: (Math.random() - 0.5) * 0.3,
     vy: (Math.random() - 0.5) * 0.3,
-    alpha: Math.random() * 0.5 + 0.5, // 초기 투명도
-    delta: Math.random() * 0.01 + 0.005 // 투명도 변화량
+    alpha: Math.random() * 0.3 + 0.7,  // 최소 0.7 ~ 1.0
+    delta: Math.random() * 0.015 + 0.01
   }));
 
   function drawStars() {
@@ -264,10 +266,12 @@
     s.alpha += s.delta;
     if (s.alpha > 1 || s.alpha < 0.3) s.delta *= -1;
 
-    ctx.beginPath();
-    ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(255, 255, 255, ${s.alpha})`;
-    ctx.fill();
+ctx.beginPath();
+ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+ctx.shadowBlur = 4;
+ctx.shadowColor = `rgba(${starColor}, ${s.alpha})`;
+ctx.fillStyle = `rgba(${starColor}, ${s.alpha})`;
+ctx.fill();
   });
 
 window.addEventListener('DOMContentLoaded', () => {
@@ -432,23 +436,26 @@ window.addEventListener('DOMContentLoaded', () => {
       let resultMusic = "";
 
       if (finalType === "현실을 꿈꾸는 자") {
-        resultText = "꿈과 현실 사이를 자유롭게 오가는 당신.";
-        resultImg = "RE/IMG_1.png";
-        resultMusic = "드뷔시 - 달빛 (Clair de Lune)";
-      } else if (finalType === "고요한 숙면가") {
-        resultText = "고요하고 깊은 잠에 빠지는 당신.";
-        resultImg = "RE/IMG_2.png";
-        resultMusic = "쇼팽 - 녹턴 No.2 (Nocturne Op.9-2)";
-      } else if (finalType === "밤의 표류자") {
-        resultText = "어둠 속을 떠도는 꿈을 꾸는 당신.";
-        resultImg = "RE/IMG_3.png";
-        resultMusic = "리스트 - 사랑의 꿈 (Liebestraum)";
-      } else {
-        resultText = "현실을 초월한 상상력을 가진 당신.";
-        resultImg = "RE/IMG_4.png";
-        resultMusic = "라벨 - 거울 (Miroirs)";
-      }
-
+  resultText = "꿈과 현실 사이를 자유롭게 오가는 당신.";
+  resultImg = "RE/IMG_1.png";
+  resultMusic = "드뷔시 - 달빛 (Clair de Lune)";
+  starColor = '160, 170, 255'; // 회보라빛
+} else if (finalType === "고요한 숙면가") {
+  resultText = "고요하고 깊은 잠에 빠지는 당신.";
+  resultImg = "RE/IMG_2.png";
+  resultMusic = "쇼팽 - 녹턴 No.2 (Nocturne Op.9-2)";
+  starColor = '100, 140, 255'; // 어두운 청남색
+} else if (finalType === "밤의 표류자") {
+  resultText = "어둠 속을 떠도는 꿈을 꾸는 당신.";
+  resultImg = "RE/IMG_3.png";
+  resultMusic = "리스트 - 사랑의 꿈 (Liebestraum)";
+  starColor = '180, 130, 255'; // 딥 퍼플
+} else {
+  resultText = "현실을 초월한 상상력을 가진 당신.";
+  resultImg = "RE/IMG_4.png";
+  resultMusic = "라벨 - 거울 (Miroirs)";
+  starColor = '255, 180, 220'; // 파스텔 핑크
+}
       document.getElementById("result").innerHTML = `
         <div class='title'>${finalType}</div>
         <p>${resultText}</p>
