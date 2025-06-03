@@ -311,7 +311,7 @@
 		  drawStars();
 		
 		  window.addEventListener('resize', () => {
-		    canvas.width = window.innerWidth;
+		    canvas.width = window.Width;
 		    canvas.height = window.innerHeight;
 		  });
 		
@@ -456,21 +456,25 @@
 		  resultText = "꿈과 현실 사이를 자유롭게 오가는 당신.";
 		  resultImg = "RE/IMG_1.png";
 		  resultMusic = "드뷔시 - 달빛 (Clair de Lune)";
+                  youtubeLink = "https://www.youtube.com/watch?v=CAxPgfOqtr8";
 		  starColor = '160, 170, 255'; // 회보라빛
 		} else if (finalType === "고요한 숙면가") {
 		  resultText = "고요하고 깊은 잠에 빠지는 당신.";
 		  resultImg = "RE/IMG_2.png";
 		  resultMusic = "쇼팽 - 녹턴 No.2 (Nocturne Op.9-2)";
+                  youtubeLink = "https://www.youtube.com/watch?v=Kaq4LFM47I0";
 		  starColor = '100, 140, 255'; // 어두운 청남색
 		} else if (finalType === "밤의 표류자") {
 		  resultText = "어둠 속을 떠도는 꿈을 꾸는 당신.";
 		  resultImg = "RE/IMG_3.png";
 		  resultMusic = "리스트 - 사랑의 꿈 (Liebestraum)";
+                  youtubeLink = "https://www.youtube.com/watch?v=7E8UuKO-Skc";
 		  starColor = '180, 130, 255'; // 딥 퍼플
 		} else {
 		  resultText = "현실을 초월한 상상력을 가진 당신.";
 		  resultImg = "RE/IMG_4.png";
 		  resultMusic = "라벨 - 거울 (Miroirs)";
+                  youtubeLink = "https://www.youtube.com/watch?v=2El3ZfWbehw";
 		  starColor = '255, 180, 220'; // 파스텔 핑크
 		}
 		      document.getElementById("result").innerHTML = `
@@ -479,6 +483,17 @@
 		        <img src="${resultImg}" alt="결과 이미지">
 		        <p style="margin-top:20px; font-weight:bold;">🎵 꿈의 BGM을 추천해드릴게요!</p>
 		        <p>${resultMusic}</p>
+<a href="${youtubeLink}" target="_blank" style="
+  display: inline-block;
+  margin-top: 20px;
+  padding: 12px 20px;
+  background: #4f46e5;
+  color: #fff;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: background 0.3s;
+">유튜브에서 듣기</a>
 		 	<button onclick="restartTest()" style="margin-top: 30px;">다시하기</button>
 		      `;
 		
