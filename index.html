@@ -70,6 +70,7 @@
     }
     button:active {
       transform: scale(0.98);
+      background: #1b1b8f;
     }
     .hidden {
       display: none;
@@ -83,28 +84,6 @@
     .fade {
       animation: fadeIn 0.6s ease-in-out;
     }
-@keyframes inkFlow {
-  0% {
-    filter: blur(12px) grayscale(100%);
-    opacity: 0;
-    transform: scale(1.1);
-  }
-  100% {
-    filter: blur(0) grayscale(0);
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-.ink-reveal {
-  animation: inkFlow 2s ease-out forwards;
-}
-
-.ink-reveal-text {
-  animation: inkFlow 2s ease-out forwards;
-  display: inline-block;
-}
-
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
@@ -121,22 +100,6 @@
       height: 100vh;
       z-index: -1;
     }
-#flash-overlay {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(255,255,255,0.8) 40%, rgba(255,255,255,0) 80%);
-  opacity: 0;
-  pointer-events: none;
-  z-index: 9999;
-  transition: opacity 0.5s ease-out, transform 0.5s ease-out;
-  transform: scale(1);
-}
-.flash-active {
-  opacity: 1;
-  transform: scale(5); /* 빛 확장 느낌 */
-}
 
 .typing {
   overflow: hidden;
@@ -155,6 +118,35 @@
   50% { border-color: #aaa; }
 }
 
+.start-btn {
+  animation: glowPulse 2.5s ease-in-out infinite;
+}
+
+@keyframes glowPulse {
+  0% {
+    box-shadow: 0 0 8px rgba(79, 70, 229, 0.4), 0 0 16px rgba(79, 70, 229, 0.2);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 16px rgba(129, 140, 248, 0.6), 0 0 24px rgba(129, 140, 248, 0.4);
+    transform: scale(1.02);
+  }
+  100% {
+    box-shadow: 0 0 8px rgba(79, 70, 229, 0.4), 0 0 16px rgba(79, 70, 229, 0.2);
+    transform: scale(1);
+  }
+}
+
+@keyframes clickFlash {
+  0% {
+    box-shadow: 0 0 40px rgba(255, 255, 255, 0.9), 0 0 80px rgba(255, 255, 255, 0.7);
+    transform: scale(1.2);
+  }
+  100% {
+    box-shadow: none;
+    transform: scale(1);
+  }
+}
   </style>
 </head>
 <body>
@@ -172,7 +164,7 @@
       졸음, 몽환, 불안, 그리고 깨어남.
       네 가지 감정의 흐름 속에서, 지금의 당신을 찾아보세요.
     </p>
-    <button onclick="startTest()">테스트 시작하기</button>
+    <button class="start-btn" onclick="startTest(event)">테스트 시작하기</button>
   </div>
   <audio id="bgm" src="Q/Space.mp3" preload="auto"></audio>
   <div id="quiz" class="card hidden"></div>
@@ -285,7 +277,13 @@ const mappings = ["현실을 꿈꾸는 자", "고요한 숙면가", "밤의 표�
       "자유 몽상가": 0
     };
 
-function startTest() {
+function startTest(event) {
+  const btn = event?.target || document.querySelector(".start-btn");
+
+  // 클릭 순간 발광 효과
+  btn.classList.add("clicked");
+  setTimeout(() => btn.classList.remove("clicked"), 500);
+
   const flash = document.getElementById("flash-overlay");
   flash.classList.add("flash-active");
 
