@@ -1,521 +1,578 @@
-		<!DOCTYPE html>
-		<html lang="ko">
-		<head>
-		  <meta charset="UTF-8" />
-		  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		  <title>당신의 꿈에 맞는 BGM을 추천해 드려요</title>
-		  <link href="https://fonts.googleapis.com/css2?family=Pretendard&display=swap" rel="stylesheet">
-		  <style>
-		    html, body {
-		      max-width: 100%;
-		      overflow-x: hidden;
-		      box-sizing: border-box;
-		    }
-		    *, *::before, *::after {
-		      box-sizing: inherit;
-		      transition: all 0.3s ease-in-out;
-		    }
-		    body {
-		      font-family: 'Pretendard', sans-serif;
-		      background: linear-gradient(to bottom, #0f1117, #0c0e13);
-		      background-attachment: fixed;
-		      background-repeat: no-repeat;
-		      margin: 0;
-		      padding: 20px;
-		      color: #eee;
-		      text-align: center;
-		      font-weight: 300;
-		    }
-		
-		#intro-overlay {
-		  position: fixed;
-		  top: 0; left: 0;
-		  width: 100vw;
-		  height: 100vh;
-		  background: #0c0e13;
-		  display: flex;
-		  justify-content: center;
-		  align-items: center;
-		  flex-direction: column;
-		  z-index: 9999;
-		  color: #eee;
-		  font-family: 'Pretendard', sans-serif;
-		  cursor: pointer;
-		  opacity: 1;
-		  transition: opacity 1.8s ease;
-		}
-		
-		#intro-overlay.hidden {
-		  opacity: 0;
-		  pointer-events: none;
-		}
-		
-		.intro-text h2 {
-		  font-size: 28px;
-		  margin-bottom: 12px;
-		  animation: fadeInUp 1.2s ease-out forwards;
-		  color: #a5b4fc;
-		}
-		
-		.intro-text p {
-		  font-size: 16px;
-		  color: #ccc;
-		  opacity: 0;
-		  animation: fadeInOnly 1.8s ease-out forwards;
-		  animation-delay: 1.2s;
-		}
-		
-		@keyframes fadeInOnly {
-		  from {
-		    opacity: 0;
-		    transform: translateY(8px);
-		  }
-		  to {
-		    opacity: 1;
-		    transform: translateY(0);
-		  }
-		}
-		
-		@keyframes resultFadeIn {
-		  from {
-		    opacity: 0;
-		    transform: translateY(30px);
-		  }
-		  to {
-		    opacity: 1;
-		    transform: translateY(0);
-		  }
-		}
-		
-		.result-appear {
-		  animation: resultFadeIn 1s ease-out;
-		}
-		
-		#intro-overlay.hidden {
-		  opacity: 0;
-		  pointer-events: none;
-		}
-		
-		#start-screen {
-		  opacity: 0;
-		  transform: translateY(30px);
-		  transition: opacity 1.8s ease, transform 1.8s ease;
-		}
-		
-		#start-screen.show {
-		  opacity: 1;
-		  transform: translateY(0);
-		}
-		
-		@keyframes fadeInUp {
-		  from { opacity: 0; transform: translateY(20px); }
-		  to { opacity: 1; transform: translateY(0); }
-		}
-		
-		@keyframes blink {
-		  from { opacity: 0.4; }
-		  to { opacity: 1; }
-		}
-		
-		   canvas#stars {
-		      position: fixed;
-		      top: 0;
-		      left: 0;
-		      width: 100%;
-		      height: 100%;
-		      z-index: -1;
-		    }
-		    .card, .result {
-		      background: rgba(20, 22, 36, 0.6);
-		      backdrop-filter: blur(6px);
-		      max-width: 500px;
-		      width: calc(100% - 40px);
-		      margin: 20px auto;
-		      padding: 25px;
-		      border-radius: 16px;
-		      border: 1px solid rgba(255, 255, 255, 0.05);
-		      box-shadow: 0 8px 30px rgba(0,0,0,0.3);
-		    }
-		    .question-img, .result img {
-		      width: 100%;
-		      aspect-ratio: 3/2;
-		      object-fit: cover;
-		      border-radius: 10px;
-		      margin-bottom: 15px;
-		    }
-		    button {
-		      width: 100%;
-		      padding: 14px;
-		      margin: 10px 0;
-		      font-size: 16px;
-		      background: #4f46e5;
-		      color: white;
-		      border: none;
-		      border-radius: 8px;
-		      cursor: pointer;
-		      font-weight: 400;
-		    }
-		    button:hover {
-		      background: #3f3ff0;
-		    }
-		    button:active {
-		      transform: scale(0.98);
-		      background: #1b1b8f;
-		    }
-		    .hidden {
-		      display: none;
-		    }
-		    .title {
-		      font-size: 28px;
-		      font-weight: 600;
-		      margin-bottom: 20px;
-		      color: #a5b4fc;
-		    }
-		    .fade {
-		      animation: fadeIn 0.6s ease-in-out;
-		    }
-		    @keyframes fadeIn {
-		      from { opacity: 0; transform: translateY(20px); }
-		      to { opacity: 1; transform: translateY(0); }
-		    }
-		    @media screen and (max-width: 480px) {
-		      body { padding: 10px; }
-		      .card { padding: 20px 15px; }
-		      button { font-size: 14px; padding: 12px; }
-		    }
-		    #stars {
-		      position: fixed;
-		      top: 0; left: 0;
-		      width: 100vw;
-		      height: 100vh;
-		      z-index: -1;
-		    }
-		
-		.start-btn {
-		  animation: glowPulse 2.5s ease-in-out infinite;
-		}
-		
-		@keyframes glowPulse {
-		  0% {
-		    box-shadow: 0 0 8px rgba(79, 70, 229, 0.4), 0 0 16px rgba(79, 70, 229, 0.2);
-		    transform: scale(1);
-		  }
-		  50% {
-		    box-shadow: 0 0 16px rgba(129, 140, 248, 0.6), 0 0 24px rgba(129, 140, 248, 0.4);
-		    transform: scale(1.02);
-		  }
-		  100% {
-		    box-shadow: 0 0 8px rgba(79, 70, 229, 0.4), 0 0 16px rgba(79, 70, 229, 0.2);
-		    transform: scale(1);
-		  }
-		}
-		
-		@keyframes clickFlash {
-		  0% {
-		    box-shadow: 0 0 40px rgba(255, 255, 255, 0.9), 0 0 80px rgba(255, 255, 255, 0.7);
-		    transform: scale(1.2);
-		  }
-		  100% {
-		    box-shadow: none;
-		    transform: scale(1);
-		  }
-		}
-		  </style>
-		</head>
-		<body>
-		  <canvas id="stars"></canvas>
-		
-		<div id="intro-overlay">
-		  <div class="intro-text">
-		    <h2>꿈의 경계선을 넘는 중</h2>
-		    <p>화면을 클릭하시오</p>
-		  </div>
-		</div>
-		
-		  <div id="start-screen" class="card">
-		    <h2 class="ink-reveal-text">당신의 꿈은 어떤 색인가요?</h2>
-		<p style="font-size: 16px; line-height: 1.6; margin-top: 15px; margin-bottom: 25px; color: #ccc;">
-		  꿈속을 지나는 그 짧고도 깊은 시간<br>당신은 어떤 밤을 건너고 있을까요?
-		</p>
-		    <p style="white-space: pre-line; font-size: 16px; line-height: 1.6; margin-top: 15px; margin-bottom: 25px; color: #ccc;">
-		      〈R.E.M – 수면 아래 이야기〉<br>
-		      이 세계를 더 깊이 느낄 수 있도록,
-		      이 작은 테스트는 당신의 꿈의 결을 따라갑니다.
-		
-		      졸음, 몽환, 불안, 그리고 깨어남.
-		      네 가지 감정의 흐름 속에서,<br>지금의 당신을 찾아보세요.
-		    </p>
-		    <button class="start-btn" onclick="startTest(event)">시작하기</button>
-		  </div>
-		  <audio id="bgm" src="Q/New World.mp3" preload="auto"></audio>
-		  <div id="quiz" class="card hidden"></div>
-		  <div id="result" class="result hidden"></div>
-		  <div id="flash-overlay"></div>
-		
-		  <script>
-		  const canvas = document.getElementById("stars");
-		  const ctx = canvas.getContext("2d");
-		  canvas.width = window.innerWidth;
-		  canvas.height = window.innerHeight;
-		
-		  let starColor = '255, 255, 255';
-		
-		  let stars = Array(150).fill().map(() => ({
-		    x: Math.random() * canvas.width,
-		    y: Math.random() * canvas.height,
-		    r: Math.random() * 1.2 + 0.5,
-		    vx: (Math.random() - 0.5) * 0.3,
-		    vy: (Math.random() - 0.5) * 0.3,
-		    alpha: Math.random() * 0.3 + 0.7,  // 최소 0.7 ~ 1.0
-		    delta: Math.random() * 0.015 + 0.01
-		  }));
-		
-		  function drawStars() {
-		  ctx.clearRect(0, 0, canvas.width, canvas.height);
-		
-		  stars.forEach(s => {
-		    s.x += s.vx;
-		    s.y += s.vy;
-		    if (s.x < 0 || s.x > canvas.width) s.vx *= -1;
-		    if (s.y < 0 || s.y > canvas.height) s.vy *= -1;
-		
-		    // ✨ 깜빡이는 투명도 처리
-		    s.alpha += s.delta;
-		    if (s.alpha > 1 || s.alpha < 0.3) s.delta *= -1;
-		
-		ctx.beginPath();
-		ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-		ctx.shadowBlur = 4;
-		ctx.shadowColor = `rgba(${starColor}, ${s.alpha})`;
-		ctx.fillStyle = `rgba(${starColor}, ${s.alpha})`;
-		ctx.fill();
-		  });
-		
-		window.addEventListener('DOMContentLoaded', () => {
-		  const intro = document.getElementById('intro-overlay');
-		  const bgm = document.getElementById('bgm');
-		
-		  intro.addEventListener('click', () => {
-		    // 1. BGM 재생
-		    bgm.volume = 0.5;
-		    bgm.play().catch(e => console.log("브금 재생 실패:", e));
-		
-		    // 2. 인트로 숨기고 시작 화면 보여주기
-		    intro.classList.add('hidden');
-		    document.getElementById("start-screen").classList.remove("hidden");
-		  });
-		});
-		
-		  requestAnimationFrame(drawStars);
-		}
-		  drawStars();
-		
-		  window.addEventListener('resize', () => {
-		    canvas.width = window.Width;
-		    canvas.height = window.innerHeight;
-		  });
-		
-		    const questions = [
-		  {
-		    q: "당신의 잠은 어떤 색일까요?",
-		    img: "Q/1.jpg",
-		    options: [
-		      "옅은 회색과 푸른빛 사이 몽환적인 색감",
-		      "짙은 남색과 검정의 차분한 색감",
-		      "짙은 보라와 짙은 먹색이 뒤엉킨 색감",
-		      "알록달록 꿈결 같은 파스텔 색감"
-		    ]
-		  },
-		  {
-		    q: "지친 하루의 끝에 이불 속 당신은 어떤 모습인가요?",
-		    img: "Q/2.webp",
-		    options: [
-		      "긴 하루를 정리하며 자꾸만 선잠을 자요",
-		      "아무 생각 없이 곧바로 잠에 빠져요",
-		      "사색에 빠져서 불안하거나 초조한 감정이 남아요",
-		      "상상의 나래를 펼치다 잠들어요"
-		    ]
-		  },
-		  {
-		    q: "꿈에서 자주 등장하는 장면은 무엇인가요?",
-		    img: "Q/3.jpg",
-		    options: [
-		      "평범한 일상이지만 뭔가 이상해요",
-		      "기억이 전혀 없어요",
-		      "추격당하거나 어두운 장소에 놓여져요",
-		      "하늘을 걷거나 날고 있는<br>말도 안되는 풍경이 펼쳐져요"
-		    ]
-		  },
-		  {
-		    q: "당신은 해결해야 할 일이 있을 때, 어떤 생각을 먼저 하시나요?",
-		    img: "Q/4.webp",
-		    options: [
-		      "이게 왜 이렇게 된 걸까?<br>흐름과 구조를 먼저 떠올려요",
-		      "지금 중요한 건 뭘까? 현재 상황에 집중해요",
-		      "앞으로 어떤 일이 벌어질까?<br>머릿속에서 여러 상황을 그려봐요",
-		      "이게 만약 다르게 흘렀다면? 상상을 확장시켜요"
-		    ]
-		  },
-		  {
-		    q: "당신은 어떤 공간에 있을 때 기분이 좋아지나요?",
-		    img: "Q/5.webp",
-		    options: [
-		      "익숙한 카페나 동네 골목길이 좋아요",
-		      "빛이 적고 조용한<br>눈치보이지 않는 내 방이 제일 편해요",
-		      "혼자만의 아지트같은 장소를 좋아해요",
-		      "갤러리나 독립서점을 좋아하고,<br>여행지에 도착했을 때 가장 설레요"
-		    ]
-		  }
-		];
-		
-		const mappings = ["현실을 꿈꾸는 자", "고요한 숙면가", "밤의 표류자", "자유 몽상가"];
-		    let current = 0;
-		    let score = {
-		      "현실을 꿈꾸는 자": 0,
-		      "고요한 숙면가": 0,
-		      "밤의 표류자": 0,
-		      "자유 몽상가": 0
-		    };
-		
-		function startTest(event) {
-		  const btn = event?.target || document.querySelector(".start-btn");
-		
-		  // 클릭 순간 발광 효과
-		  btn.classList.add("clicked");
-		  setTimeout(() => btn.classList.remove("clicked"), 500);
-		
-		  const flash = document.getElementById("flash-overlay");
-		  flash.classList.add("flash-active");
-		
-		  setTimeout(() => {
-		    flash.classList.remove("flash-active");
-		
-		    document.getElementById("start-screen").classList.add("hidden");
-		    document.getElementById("quiz").classList.remove("hidden");
-		
-		    renderQuestion();
-		  }, 400);
-		}
-		
-		    function renderQuestion() {
-		      const quiz = document.getElementById("quiz");
-		      const q = questions[current];
-		      quiz.classList.add("fade");
-		      quiz.innerHTML = `
-		        <div class='title'>Q${current + 1}</div>
-		        <p>${q.q}</p>
-		        <img src="${q.img}" alt="질문 이미지" class="question-img">
-		        ${q.options.map((opt, idx) => `<button onclick="answer(${idx})">${opt}</button>`).join('')}
-		      `;
-		    }
-		
-		window.addEventListener('DOMContentLoaded', () => {
-		  const intro = document.getElementById('intro-overlay');
-		  const bgm = document.getElementById('bgm');
-		  const startScreen = document.getElementById('start-screen');
-		
-		  intro.addEventListener('click', () => {
-		    // 1. 브금 시작
-		    bgm.volume = 0.5;
-		    bgm.play().catch(e => console.log("브금 재생 실패:", e));
-		
-		    // 2. intro 사라지기 (부드럽게)
-		    intro.classList.add('hidden');
-		
-		    // 3. 살짝 늦춰서 start-screen 등장
-		    setTimeout(() => {
-		      startScreen.classList.remove('hidden');
-		      startScreen.classList.add('show');
-		    }, 800); // intro가 조금 사라진 후 보여주기
-		  });
-		});
-		
-		    function answer(index) {
-		      const type = mappings[index];
-		      score[type]++;
-		      current++;
-		      if (current < questions.length) {
-		        renderQuestion();
-		      } else {
-		        showResult();
-		      }
-		    }
-		
-		    function showResult() {
-		      document.getElementById("quiz").classList.add("hidden");
-		      document.getElementById("result").classList.remove("hidden");
-		
-		      const maxScore = Math.max(...Object.values(score));
-		      const finalType = Object.keys(score).find(key => score[key] === maxScore);
-		
-		      let resultText = "";
-		      let resultImg = "";
-		      let resultMusic = "";
-		
-		      if (finalType === "현실을 꿈꾸는 자") {
-		  resultText = "꿈과 현실 사이를 자유롭게 오가는 당신.";
-		  resultImg = "RE/IMG_1.png";
-		  resultMusic = "드뷔시 - 달빛 (Clair de Lune)";
-                  youtubeLink = "https://www.youtube.com/watch?v=CAxPgfOqtr8";
-		  starColor = '160, 170, 255'; // 회보라빛
-		} else if (finalType === "고요한 숙면가") {
-		  resultText = "고요하고 깊은 잠에 빠지는 당신.";
-		  resultImg = "RE/IMG_2.png";
-		  resultMusic = "Jóhann Jóhannsson<br>「'Flight From The City' from Orphée」";
-                  youtubeLink = "https://www.youtube.com/watch?v=AlftMNmDH00";
-		  starColor = '100, 140, 255'; // 어두운 청남색
-		} else if (finalType === "밤의 표류자") {
-		  resultText = "어둠 속을 떠도는 꿈을 꾸는 당신.";
-		  resultImg = "RE/IMG_3.png";
-		  resultMusic = "리스트 - 사랑의 꿈 (Liebestraum)";
-                  youtubeLink = "https://www.youtube.com/watch?v=7E8UuKO-Skc";
-		  starColor = '180, 130, 255'; // 딥 퍼플
-		} else {
-		  resultText = "현실을 초월한 상상력을 가진 당신.";
-		  resultImg = "RE/IMG_4.png";
-		  resultMusic = "라벨 - 거울 (Miroirs)";
-                  youtubeLink = "https://www.youtube.com/watch?v=2El3ZfWbehw";
-		  starColor = '255, 180, 220'; // 파스텔 핑크
-		}
-		      document.getElementById("result").innerHTML = `
-		        <div class='title'>${finalType}</div>
-		        <p>${resultText}</p>
-		        <img src="${resultImg}" alt="결과 이미지">
-		        <p style="margin-top:20px; font-weight:bold;">🎵 꿈의 BGM을 추천해드릴게요!</p>
-		        <p>${resultMusic}</p>
-<a href="${youtubeLink}" target="_blank" style="
-  display: inline-block;
-  margin-top: 20px;
-  padding: 12px 20px;
-  background: #4f46e5;
-  color: #fff;
-  border-radius: 8px;
-  text-decoration: none;
-  font-weight: 500;
-  transition: background 0.3s;
-">유튜브에서 듣기</a>
-		 	<button onclick="restartTest()" style="margin-top: 30px;">다시하기</button>
-		      `;
-		
-		const resultDiv = document.getElementById("result");
-		resultDiv.classList.remove("hidden");
-		resultDiv.classList.add("result-appear");
-		
-		    }
-		
-			function restartTest() {
-		  		current = 0;
-		  		score = {
-		    			"현실을 꿈꾸는 자": 0,
-		    			"고요한 숙면가": 0,
-		    			"밤의 표류자": 0,
-		    			"자유 몽상가": 0
-		 			 };
-		
-		  		document.getElementById("result").classList.add("hidden");
-		  		document.getElementById("start-screen").classList.remove("hidden");
-				}
-		
-		  </script>
-		</body>
-		</html>
+			<!DOCTYPE html>
+			<html lang="ko">
+			<head>
+			  <meta charset="UTF-8" />
+			  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+			  <title>당신의 꿈에 맞는 BGM을 추천해 드려요</title>
+			  <link href="https://fonts.googleapis.com/css2?family=Pretendard&display=swap" rel="stylesheet">
+			  <style>
+			    html, body {
+			      max-width: 100%;
+			      overflow-x: hidden;
+			      box-sizing: border-box;
+			    }
+			    *, *::before, *::after {
+			      box-sizing: inherit;
+			      transition: all 0.3s ease-in-out;
+			    }
+			    body {
+			      font-family: 'Pretendard', sans-serif;
+			      background: linear-gradient(to bottom, #0f1117, #0c0e13);
+			      background-attachment: fixed;
+			      background-repeat: no-repeat;
+			      margin: 0;
+			      padding: 20px;
+			      color: #eee;
+			      text-align: center;
+			      font-weight: 300;
+			    }
+			
+			#intro-overlay {
+			  position: fixed;
+			  top: 0; left: 0;
+			  width: 100vw;
+			  height: 100vh;
+			  background: #0c0e13;
+			  display: flex;
+			  justify-content: center;
+			  align-items: center;
+			  flex-direction: column;
+			  z-index: 9999;
+			  color: #eee;
+			  font-family: 'Pretendard', sans-serif;
+			  cursor: pointer;
+			  opacity: 1;
+			  transition: opacity 1.8s ease;
+			}
+			
+			#intro-overlay.hidden {
+			  opacity: 0;
+			  pointer-events: none;
+			}
+			
+			.intro-text h2 {
+			  font-size: 28px;
+			  margin-bottom: 12px;
+			  animation: fadeInUp 1.2s ease-out forwards;
+			  color: #a5b4fc;
+			}
+			
+			.intro-text p {
+			  font-size: 16px;
+			  color: #ccc;
+			  opacity: 0;
+			  animation: fadeInOnly 1.8s ease-out forwards;
+			  animation-delay: 1.2s;
+			}
+			
+			@keyframes fadeInOnly {
+			  from {
+			    opacity: 0;
+			    transform: translateY(8px);
+			  }
+			  to {
+			    opacity: 1;
+			    transform: translateY(0);
+			  }
+			}
+			
+			@keyframes resultFadeIn {
+			  from {
+			    opacity: 0;
+			    transform: translateY(30px);
+			  }
+			  to {
+			    opacity: 1;
+			    transform: translateY(0);
+			  }
+			}
+			
+			.result-appear {
+			  animation: resultFadeIn 1s ease-out;
+			}
+			
+			#intro-overlay.hidden {
+			  opacity: 0;
+			  pointer-events: none;
+			}
+			
+			#start-screen {
+			  opacity: 0;
+			  transform: translateY(30px);
+			  transition: opacity 1.8s ease, transform 1.8s ease;
+			}
+			
+			#start-screen.show {
+			  opacity: 1;
+			  transform: translateY(0);
+			}
+			
+			@keyframes fadeInUp {
+			  from { opacity: 0; transform: translateY(20px); }
+			  to { opacity: 1; transform: translateY(0); }
+			}
+			
+			@keyframes blink {
+			  from { opacity: 0.4; }
+			  to { opacity: 1; }
+			}
+			
+			   canvas#stars {
+			      position: fixed;
+			      top: 0;
+			      left: 0;
+			      width: 100%;
+			      height: 100%;
+			      z-index: -1;
+			    }
+			    .card, .result {
+			      background: rgba(20, 22, 36, 0.6);
+			      backdrop-filter: blur(6px);
+			      max-width: 500px;
+			      width: calc(100% - 40px);
+			      margin: 20px auto;
+			      padding: 25px;
+			      border-radius: 16px;
+			      border: 1px solid rgba(255, 255, 255, 0.05);
+			      box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+			    }
+			    .question-img, .result img {
+			      width: 100%;
+			      aspect-ratio: 3/2;
+			      object-fit: cover;
+			      border-radius: 10px;
+			      margin-bottom: 15px;
+			    }
+			    button {
+			      width: 100%;
+			      padding: 14px;
+			      margin: 10px 0;
+			      font-size: 16px;
+			      background: #4f46e5;
+			      color: white;
+			      border: none;
+			      border-radius: 8px;
+			      cursor: pointer;
+			      font-weight: 400;
+			    }
+			    button:hover {
+			      background: #3f3ff0;
+			    }
+			    button:active {
+			      transform: scale(0.98);
+			      background: #1b1b8f;
+			    }
+			    .hidden {
+			      display: none;
+			    }
+			    .title {
+			      font-size: 28px;
+			      font-weight: 600;
+			      margin-bottom: 20px;
+			      color: #a5b4fc;
+			    }
+			    .fade {
+			      animation: fadeIn 0.6s ease-in-out;
+			    }
+			    @keyframes fadeIn {
+			      from { opacity: 0; transform: translateY(20px); }
+			      to { opacity: 1; transform: translateY(0); }
+			    }
+			    @media screen and (max-width: 480px) {
+			      body { padding: 10px; }
+			      .card { padding: 20px 15px; }
+			      button { font-size: 14px; padding: 12px; }
+			    }
+			    #stars {
+			      position: fixed;
+			      top: 0; left: 0;
+			      width: 100vw;
+			      height: 100vh;
+			      z-index: -1;
+			    }
+			
+			.start-btn {
+			  animation: glowPulse 2.5s ease-in-out infinite;
+			}
+			
+			@keyframes glowPulse {
+			  0% {
+			    box-shadow: 0 0 8px rgba(79, 70, 229, 0.4), 0 0 16px rgba(79, 70, 229, 0.2);
+			    transform: scale(1);
+			  }
+			  50% {
+			    box-shadow: 0 0 16px rgba(129, 140, 248, 0.6), 0 0 24px rgba(129, 140, 248, 0.4);
+			    transform: scale(1.02);
+			  }
+			  100% {
+			    box-shadow: 0 0 8px rgba(79, 70, 229, 0.4), 0 0 16px rgba(79, 70, 229, 0.2);
+			    transform: scale(1);
+			  }
+			}
+			
+			@keyframes clickFlash {
+			  0% {
+			    box-shadow: 0 0 40px rgba(255, 255, 255, 0.9), 0 0 80px rgba(255, 255, 255, 0.7);
+			    transform: scale(1.2);
+			  }
+			  100% {
+			    box-shadow: none;
+			    transform: scale(1);
+			  }
+			}
+			  </style>
+			</head>
+			<body>
+			  <canvas id="stars"></canvas>
+			
+			<div id="intro-overlay">
+			  <div class="intro-text">
+			    <h2>꿈의 경계선을 넘는 중</h2>
+			    <p>화면을 클릭하시오</p>
+			  </div>
+			</div>
+			
+			  <div id="start-screen" class="card">
+			    <h2 class="ink-reveal-text">당신의 꿈은 어떤 색인가요?</h2>
+			<p style="font-size: 16px; line-height: 1.6; margin-top: 15px; margin-bottom: 25px; color: #ccc;">
+			  꿈속을 지나는 그 짧고도 깊은 시간<br>당신은 어떤 밤을 건너고 있을까요?
+			</p>
+			    <p style="white-space: pre-line; font-size: 16px; line-height: 1.6; margin-top: 15px; margin-bottom: 25px; color: #ccc;">
+			      〈R.E.M – 수면 아래 이야기〉<br>
+			      이 세계를 더 깊이 느낄 수 있도록,
+			      이 작은 테스트는 당신의 꿈의 결을 따라갑니다.
+			
+			      졸음, 몽환, 불안, 그리고 깨어남.
+			      네 가지 감정의 흐름 속에서,<br>지금의 당신을 찾아보세요.
+			    </p>
+			    <button class="start-btn" onclick="startTest(event)">시작하기</button>
+			  </div>
+			  <audio id="bgm" src="Q/New World.mp3" preload="auto"></audio>
+			  <div id="quiz" class="card hidden"></div>
+			  <div id="result" class="result hidden"></div>
+			  <div id="flash-overlay"></div>
+			
+			  <script>
+			  const canvas = document.getElementById("stars");
+			  const ctx = canvas.getContext("2d");
+			  canvas.width = window.innerWidth;
+			  canvas.height = window.innerHeight;
+			
+			  let starColor = '255, 255, 255';
+			
+			  let stars = Array(150).fill().map(() => ({
+			    x: Math.random() * canvas.width,
+			    y: Math.random() * canvas.height,
+			    r: Math.random() * 1.2 + 0.5,
+			    vx: (Math.random() - 0.5) * 0.3,
+			    vy: (Math.random() - 0.5) * 0.3,
+			    alpha: Math.random() * 0.3 + 0.7,  // 최소 0.7 ~ 1.0
+			    delta: Math.random() * 0.015 + 0.01
+			  }));
+			
+			  function drawStars() {
+			  ctx.clearRect(0, 0, canvas.width, canvas.height);
+			
+			  stars.forEach(s => {
+			    s.x += s.vx;
+			    s.y += s.vy;
+			    if (s.x < 0 || s.x > canvas.width) s.vx *= -1;
+			    if (s.y < 0 || s.y > canvas.height) s.vy *= -1;
+			
+			    // ✨ 깜빡이는 투명도 처리
+			    s.alpha += s.delta;
+			    if (s.alpha > 1 || s.alpha < 0.3) s.delta *= -1;
+			
+			ctx.beginPath();
+			ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+			ctx.shadowBlur = 4;
+			ctx.shadowColor = `rgba(${starColor}, ${s.alpha})`;
+			ctx.fillStyle = `rgba(${starColor}, ${s.alpha})`;
+			ctx.fill();
+			  });
+			
+			window.addEventListener('DOMContentLoaded', () => {
+			  const intro = document.getElementById('intro-overlay');
+			  const bgm = document.getElementById('bgm');
+			
+			  intro.addEventListener('click', () => {
+			    // 1. BGM 재생
+			    bgm.volume = 0.5;
+			    bgm.play().catch(e => console.log("브금 재생 실패:", e));
+			
+			    // 2. 인트로 숨기고 시작 화면 보여주기
+			    intro.classList.add('hidden');
+			    document.getElementById("start-screen").classList.remove("hidden");
+			  });
+			});
+			
+			  requestAnimationFrame(drawStars);
+			}
+			  drawStars();
+			
+			  window.addEventListener('resize', () => {
+			    canvas.width = window.Width;
+			    canvas.height = window.innerHeight;
+			  });
+			
+			    const questions = [
+			  {
+			    q: "당신의 잠은 어떤 색일까요?",
+			    img: "Q/1.jpg",
+			    options: [
+			      "옅은 회색과 푸른빛 사이 몽환적인 색감",
+			      "짙은 남색과 검정의 차분한 색감",
+			      "짙은 보라와 짙은 먹색이 뒤엉킨 색감",
+			      "알록달록 꿈결 같은 파스텔 색감"
+			    ]
+			  },
+			  {
+			    q: "지친 하루의 끝에 이불 속 당신은 어떤 모습인가요?",
+			    img: "Q/2.webp",
+			    options: [
+			      "긴 하루를 정리하며 자꾸만 선잠을 자요",
+			      "아무 생각 없이 곧바로 잠에 빠져요",
+			      "사색에 빠져서 불안하거나 초조한 감정이 남아요",
+			      "상상의 나래를 펼치다 잠들어요"
+			    ]
+			  },
+			  {
+			    q: "꿈에서 자주 등장하는 장면은 무엇인가요?",
+			    img: "Q/3.jpg",
+			    options: [
+			      "평범한 일상이지만 뭔가 이상해요",
+			      "기억이 전혀 없어요",
+			      "추격당하거나 어두운 장소에 놓여져요",
+			      "하늘을 걷거나 날고 있는<br>말도 안되는 풍경이 펼쳐져요"
+			    ]
+			  },
+			  {
+			    q: "당신은 해결해야 할 일이 있을 때, 어떤 생각을 먼저 하시나요?",
+			    img: "Q/4.webp",
+			    options: [
+			      "이게 왜 이렇게 된 걸까?<br>흐름과 구조를 먼저 떠올려요",
+			      "지금 중요한 건 뭘까? 현재 상황에 집중해요",
+			      "앞으로 어떤 일이 벌어질까?<br>머릿속에서 여러 상황을 그려봐요",
+			      "이게 만약 다르게 흘렀다면? 상상을 확장시켜요"
+			    ]
+			  },
+			  {
+			    q: "당신은 어떤 공간에 있을 때 기분이 좋아지나요?",
+			    img: "Q/5.webp",
+			    options: [
+			      "익숙한 카페나 동네 골목길이 좋아요",
+			      "빛이 적고 조용한<br>눈치보이지 않는 내 방이 제일 편해요",
+			      "혼자만의 아지트같은 장소를 좋아해요",
+			      "갤러리나 독립서점을 좋아하고,<br>여행지에 도착했을 때 가장 설레요"
+			    ]
+			  }
+			];
+			
+			const mappings = ["현실을 꿈꾸는 자", "고요한 숙면가", "밤의 표류자", "자유 몽상가"];
+			    let current = 0;
+			    let score = {
+			      "현실을 꿈꾸는 자": 0,
+			      "고요한 숙면가": 0,
+			      "밤의 표류자": 0,
+			      "자유 몽상가": 0
+			    };
+			
+			function startTest(event) {
+			  const btn = event?.target || document.querySelector(".start-btn");
+			
+			  // 클릭 순간 발광 효과
+			  btn.classList.add("clicked");
+			  setTimeout(() => btn.classList.remove("clicked"), 500);
+			
+			  const flash = document.getElementById("flash-overlay");
+			  flash.classList.add("flash-active");
+			
+			  setTimeout(() => {
+			    flash.classList.remove("flash-active");
+			
+			    document.getElementById("start-screen").classList.add("hidden");
+			    document.getElementById("quiz").classList.remove("hidden");
+			
+			    renderQuestion();
+			  }, 400);
+			}
+			
+			    function renderQuestion() {
+			      const quiz = document.getElementById("quiz");
+			      const q = questions[current];
+			      quiz.classList.add("fade");
+			      quiz.innerHTML = `
+			        <div class='title'>Q${current + 1}</div>
+			        <p>${q.q}</p>
+			        <img src="${q.img}" alt="질문 이미지" class="question-img">
+			        ${q.options.map((opt, idx) => `<button onclick="answer(${idx})">${opt}</button>`).join('')}
+			      `;
+			    }
+			
+			window.addEventListener('DOMContentLoaded', () => {
+			  const intro = document.getElementById('intro-overlay');
+			  const bgm = document.getElementById('bgm');
+			  const startScreen = document.getElementById('start-screen');
+			
+			  intro.addEventListener('click', () => {
+			    // 1. 브금 시작
+			    bgm.volume = 0.5;
+			    bgm.play().catch(e => console.log("브금 재생 실패:", e));
+			
+			    // 2. intro 사라지기 (부드럽게)
+			    intro.classList.add('hidden');
+			
+			    // 3. 살짝 늦춰서 start-screen 등장
+			    setTimeout(() => {
+			      startScreen.classList.remove('hidden');
+			      startScreen.classList.add('show');
+			    }, 800); // intro가 조금 사라진 후 보여주기
+			  });
+			});
+			
+			    function answer(index) {
+			      const type = mappings[index];
+			      score[type]++;
+			      current++;
+			      if (current < questions.length) {
+			        renderQuestion();
+			      } else {
+			        showResult();
+			      }
+			    }
+			
+			    function showResult() {
+			      document.getElementById("quiz").classList.add("hidden");
+			      document.getElementById("result").classList.remove("hidden");
+			
+			      const maxScore = Math.max(...Object.values(score));
+			      const finalType = Object.keys(score).find(key => score[key] === maxScore);
+			
+			      let resultText = "";
+			      let resultImg = "";
+			      let resultMusic = "";
+			
+			      if (finalType === "현실을 꿈꾸는 자") {
+			  resultText = "꿈과 현실 사이를 자유롭게 오가는 당신.";
+			  resultImg = "RE/IMG_1.png";
+			  resultMusic = "드뷔시 - 달빛 (Clair de Lune)";
+	                  youtubeLink = "https://www.youtube.com/watch?v=CAxPgfOqtr8";
+			  starColor = '160, 170, 255'; // 회보라빛
+			} else if (finalType === "고요한 숙면가") {
+			  resultText = "고요하고 깊은 잠에 빠지는 당신.";
+			  resultImg = "RE/IMG_2.png";
+			  resultMusic = "쇼팽 - 녹턴 No.2 (Nocturne Op.9-2)";
+	                  youtubeLink = "https://www.youtube.com/watch?v=Kaq4LFM47I0";
+			  starColor = '100, 140, 255'; // 어두운 청남색
+			} else if (finalType === "밤의 표류자") {
+			  resultText = "어둠 속을 떠도는 꿈을 꾸는 당신.";
+			  resultImg = "RE/IMG_3.png";
+			  resultMusic = "리스트 - 사랑의 꿈 (Liebestraum)";
+	                  youtubeLink = "https://www.youtube.com/watch?v=7E8UuKO-Skc";
+			  starColor = '180, 130, 255'; // 딥 퍼플
+			} else {
+			  resultText = "현실을 초월한 상상력을 가진 당신.";
+			  resultImg = "RE/IMG_4.png";
+			  resultMusic = "라벨 - 거울 (Miroirs)";
+	                  youtubeLink = "https://www.youtube.com/watch?v=2El3ZfWbehw";
+			  starColor = '255, 180, 220'; // 파스텔 핑크
+			}
+			      document.getElementById("result").innerHTML = `
+			        <div class='title'>${finalType}</div>
+			        <p>${resultText}</p>
+			        <img src="${resultImg}" alt="결과 이미지">
+			        <p style="margin-top:20px; font-weight:bold;">🎵 꿈의 BGM을 추천해드릴게요!</p>
+			        <p>${resultMusic}</p>
+	
+	
+	<a href="${youtubeLink}" target="_blank" style="
+	  display: inline-block;
+	  margin-top: 20px;
+	  padding: 12px 20px;
+	  background: #4f46e5;
+	  color: #fff;
+	  border-radius: 8px;
+	  text-decoration: none;
+	  font-weight: 500;
+	  transition: background 0.3s;
+	">유튜브에서 듣기</a>
+	
+	<div style="
+	  margin-top: 30px;
+	  display: flex;
+	  justify-content: center;
+	  align-items: center; /* 🎯 이것이 상하정렬을 맞춰줌 */
+	  gap: 16px;
+	">
+	  <!-- 버튼 -->
+	  <button id="retryBtn" style="
+	    display: inline-flex;
+	    align-items: center;
+	    justify-content: center;
+	    gap: 8px;
+	    width: 180px;
+	    height: 50px;
+	    background: #4f46e5;
+	    color: #fff;
+	    border: none;
+	    border-radius: 8px;
+	    font-size: 16px;
+	    font-weight: 500;
+	    cursor: pointer;
+	    transition: background 0.3s;
+	  ">
+	    <span style="font-size: 20px;">🌙</span>
+	    <span>다시 잠들기</span>
+	  </button>
+	
+	  <!-- 링크 -->
+	  <a href="https://www.instagram.com/whoisart_official/" target="_blank" style="
+	    display: inline-flex;
+	    align-items: center;
+	    justify-content: center;
+	    gap: 8px;
+	    width: 180px;
+	    height: 50px;
+	    background: #111827;
+	    color: #fff;
+	    border-radius: 8px;
+	    text-decoration: none;
+	    font-size: 16px;
+	    font-weight: 500;
+	    transition: background 0.3s;
+	  ">
+	    <span style="font-size: 20px;">🌞</span>
+	    <span>꿈에서 깨기</span>
+	  </a>
+	</div>
+	`;
+	
+	setTimeout(() => {
+	  const retryBtn = document.getElementById("retryBtn");
+	  if (retryBtn) {
+	    retryBtn.addEventListener("click", restartTest);
+	  }
+	}, 0);
+	
+			const resultDiv = document.getElementById("result");
+			resultDiv.classList.remove("hidden");
+			resultDiv.classList.add("result-appear");
+			
+			    }
+			
+				function restartTest() {
+			  		current = 0;
+			  		score = {
+			    			"현실을 꿈꾸는 자": 0,
+			    			"고요한 숙면가": 0,
+			    			"밤의 표류자": 0,
+			    			"자유 몽상가": 0
+			 			 };
+			
+			  		document.getElementById("result").classList.add("hidden");
+			  		document.getElementById("start-screen").classList.remove("hidden");
+					}
+			
+			  </script>
+			</body>
+			</html>
